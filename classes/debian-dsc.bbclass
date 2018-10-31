@@ -40,6 +40,20 @@ python __anonymous() {
 
     d.setVar('SRCPKG_URI', ' '.join(files))
 
+    pn = d.getVar('PN', True) or ""
+    bb.plain("PN: " + pn)
+
+    local_build_dep = []
+    if pn == "hello":
+        local_build_dep.append("wget")
+
+    # inject DEPENDS for local packages
+    dep_list = d.getVar('DEPENDS', True) or ""
+    bb.plain("Before DEPENDS: " + dep_list)
+    d.setVar('DEPENDS', dep_list + ' ' + ' '.join(local_build_dep))
+    dep_list = d.getVar('DEPENDS', True) or ""
+    bb.plain("After DEPENDS: " + dep_list)
+
 # TODO:
 # 1. Get the name of tarball and set SRC_URI (lightweight dsc backend) => Done
 # 2. Fetch tarball and derive 'debian/control' (full dsc backend)
